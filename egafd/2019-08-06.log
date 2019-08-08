@@ -1,0 +1,30 @@
+
+2019-08-06 16:50:22 [scrapy.core.engine] INFO: Closing spider (shutdown)
+2019-08-06 16:50:22 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://egafd.com/actresses/details.php/id/m02065> (referer: http://egafd.com/actresses/index.php/index/s)
+2019-08-06 16:50:22 [scrapy.core.scraper] ERROR: Spider error processing <GET http://egafd.com/actresses/details.php/id/s00856> (referer: http://egafd.com/actresses/index.php/index/s)
+Traceback (most recent call last):
+  File "f:\program\python37\lib\site-packages\scrapy\utils\defer.py", line 102, in iter_errback
+    yield next(it)
+  File "f:\program\python37\lib\site-packages\scrapy\core\spidermw.py", line 84, in evaluate_iterable
+    for r in iterable:
+  File "f:\program\python37\lib\site-packages\scrapy\spidermiddlewares\offsite.py", line 29, in process_spider_output
+    for x in result:
+  File "f:\program\python37\lib\site-packages\scrapy\core\spidermw.py", line 84, in evaluate_iterable
+    for r in iterable:
+  File "f:\program\python37\lib\site-packages\scrapy\spidermiddlewares\referer.py", line 339, in <genexpr>
+    return (_set_referer(r) for r in result or ())
+  File "f:\program\python37\lib\site-packages\scrapy\core\spidermw.py", line 84, in evaluate_iterable
+    for r in iterable:
+  File "f:\program\python37\lib\site-packages\scrapy\spidermiddlewares\urllength.py", line 37, in <genexpr>
+    return (r for r in result or () if _filter(r))
+  File "f:\program\python37\lib\site-packages\scrapy\core\spidermw.py", line 84, in evaluate_iterable
+    for r in iterable:
+  File "f:\program\python37\lib\site-packages\scrapy\spidermiddlewares\depth.py", line 58, in <genexpr>
+    return (r for r in result or () if _filter(r))
+  File "F:\WORKSPACE\Python\scrapyStudy\egafd\egafd\spiders\actress.py", line 24, in parse_actress
+    item.name = names[0] if names[1] == '' else names[0] + names[1]
+  File "f:\program\python37\lib\site-packages\scrapy\item.py", line 86, in __setattr__
+    (name, value))
+AttributeError: Use item['name'] = 'Simi Gree' to set field value
+2019-08-06 16:50:22 [scrapy.core.scraper] ERROR: Spider error processing <GET http://egafd.com/actresses/details.php/id/m02065> (referer: http://egafd.com/actresses/index.php/index/s)
+Traceback (most recent call last):
