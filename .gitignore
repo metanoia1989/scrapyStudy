@@ -1,3 +1,4 @@
 __pycache__/
 .scrapy/
 egafd.com/
+.env
