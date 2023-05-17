@@ -12,6 +12,9 @@ class ChapterItem(scrapy.Item):
     level = scrapy.Field()
     url = scrapy.Field()
     name_pali = scrapy.Field()
+    parent_name_pali = scrapy.Field()
+    sort_order = scrapy.Field()
+    parent_order = scrapy.Field()
 
 class ChapterContentItem(scrapy.Item):
     # define the fields for your item here like:
