@@ -9,11 +9,8 @@ from scrapy.exceptions import DropItem
 from itemadapter import ItemAdapter
 import psycopg
 from psycopg.rows import dict_row 
-import json
 from . import config
 from .items import ChapterItem, ChapterContentItem
-
-
 
 
 class MySQLStorePipeline:
@@ -37,10 +34,6 @@ class MySQLStorePipeline:
             if isinstance(item, ChapterItem):
                 self.process_chapter(item, spider)
 
-            if isinstance(item, ChapterContentItem):
-                self.process_content(item, spider)
-
-
         self.cursor.close()
         self.connection.close()
 
@@ -48,7 +41,13 @@ class MySQLStorePipeline:
         """
         item处理分发器
         """
-        self.items.append(item)
+        # 章节item优先分类，最后处理
+        if isinstance(item, ChapterItem):
+            self.items.append(item)
+
+        # 章节内容，直接处理 
+        if isinstance(item, ChapterContentItem):
+            self.process_content(item, spider)
 
         return item
    
@@ -57,14 +56,6 @@ class MySQLStorePipeline:
         插入章节数据
         """
         try:
-            # 查询是否已存在此章节 
-            name_pali = item.get("name_pali")
-            self.cursor.execute("select * from chapters where name_pali = %s", [name_pali])
-            current = self.cursor.fetchone()
-
-            if current is not None:
-                raise DropItem("Duplicate item found: %s" % item)
-
             # 查询父级
             parent_name = item.get("parent_name_pali") # 竟然为None 奇怪 
             self.cursor.execute("select * from chapters where name_pali = %s", [parent_name])
@@ -76,6 +67,14 @@ class MySQLStorePipeline:
             else:
                 parent_id = 0
                 level = 1
+
+            # 查询是否已存在此章节 
+            name_pali = item.get("name_pali")
+            self.cursor.execute("select * from chapters where name_pali = %s and pid = %s", [name_pali, parent_id])
+            current = self.cursor.fetchone()
+
+            if current is not None:
+                raise DropItem("Duplicate item found: %s" % item)
 
             # 插入操作 
             item_data = [
@@ -103,7 +102,7 @@ class MySQLStorePipeline:
         try:
             # 重复检测处理  
             chapter_id = item.get('chapter_id')
-            self.cursor.execute("select * from chapter_content where chatper_id = %s", [chapter_id])
+            self.cursor.execute("select * from chapter_content where chapter_id = %s", [chapter_id])
             current = self.cursor.fetchone()
             if current is not None:
                 raise DropItem("Duplicate item found: %s" % item)
@@ -112,7 +111,7 @@ class MySQLStorePipeline:
                 chapter_id,
                 item.get("html")
             ]
-            self.cursor.execute("INSERT INTO chapter_content (chatper_id, html) VALUES (%s, %s)", item_data)
+            self.cursor.execute("INSERT INTO chapter_content (chapter_id, html) VALUES (%s, %s)", item_data)
 
             self.connection.commit()
 
