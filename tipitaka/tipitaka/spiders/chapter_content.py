@@ -13,7 +13,7 @@ class ChapterContentSpider(scrapy.Spider):
 
     def start_requests(self):
         db = db_query()
-        chapters = db.queryAll("select id, url from chapters where level = 4")
+        chapters = db.queryAll("SELECT * FROM chapters WHERE url NOT LIKE %s and url <> ''", ['%toc%'])
         db.close()
         i = 0
         print(chapters)
